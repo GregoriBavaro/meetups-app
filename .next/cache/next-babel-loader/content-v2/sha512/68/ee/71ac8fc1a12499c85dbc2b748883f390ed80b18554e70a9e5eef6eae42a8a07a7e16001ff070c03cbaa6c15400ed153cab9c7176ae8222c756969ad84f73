@@ -1,0 +1,1 @@
+{"ast":null,"code":"const MeetupDetails = () => {\n  return;\n};","map":{"version":3,"sources":["D:/UDEMY/react-apps-udemy/Next.js/my-meetups-app/pages/[meetupId]/index.js"],"names":["MeetupDetails"],"mappings":"AAEA,MAAMA,aAAa,GAAG,MAAM;AACxB;AACH,CAFD","sourcesContent":["\r\n\r\nconst MeetupDetails = () => {\r\n    return\r\n}"]},"metadata":{},"sourceType":"script"}
