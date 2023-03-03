@@ -1,26 +1,22 @@
+import { MongoClient } from "mongodb";
+import Head from "next/head";
+import { Fragment } from "react";
+
 import MeetupList from "../components/meetups/MeetupList";
 
-const DUMMY_MEETUPS = [
-  {
-    id: "m1",
-    title: "A First Meetup",
-    image:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/MUNCH_Munch_Museum_Oslo_opened_22_October_2021.jpg/1280px-MUNCH_Munch_Museum_Oslo_opened_22_October_2021.jpg",
-    address: "Oslo, Norway center avenue 12A-46",
-    description: "This is a first meet up",
-  },
-  {
-    id: "m2",
-    title: "A SecondMEetup",
-    image:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/Chateau-saint-ange-tibre.jpg/1024px-Chateau-saint-ange-tibre.jpg",
-    address: "Rome, Italy avenue pizza-slice69",
-    description: "This is a second meet up",
-  },
-];
-
 const HomePage = (props) => {
-  return <MeetupList meetups={props.meetups} />;
+  return (
+    <Fragment>
+      <Head>
+        <title>React Meetups</title>
+        <meta
+          name="description"
+          content="Browse a huge list of highly active React meetups!"
+        />
+      </Head>
+      <MeetupList meetups={props.meetups} />
+    </Fragment>
+  );
 };
 
 // export async function getServerSideProps(context) {
@@ -35,15 +31,31 @@ const HomePage = (props) => {
 //   }
 // }
 
-export function getStaticProps() {
+export async function getStaticProps() {
+  const client = await MongoClient.connect(
+    "mongodb+srv://greggego:greggego@meetups.quwmsmg.mongodb.net/?retryWrites=true&w=majority"
+  );
 
-  //fetch data from api 
+  const db = client.db();
+
+  const meetupsCollections = db.collection("meetups");
+
+  const meetups = await meetupsCollections.find().toArray();
+
+  client.close();
+
+  //fetch data from api
   return {
     props: {
-      meetups: DUMMY_MEETUPS
+      meetups: meetups.map((meetup) => ({
+        title: meetup.title,
+        address: meetup.address,
+        image: meetup.image,
+        id: meetup._id.toString(),
+      })),
     },
-    revalidate: 1
-  }
+    revalidate: 1,
+  };
 }
 
 export default HomePage;
